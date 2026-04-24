@@ -1,0 +1,13 @@
+id: telegram-send
+name: Telegram
+type: n8n-nodes-base.telegram
+params:
+  resource: message
+  operation: send
+  chatId: '123'
+  text: 'Hello'
+credentials:
+  telegramApi: {}
+ui:
+  column: 2
+  row: 0

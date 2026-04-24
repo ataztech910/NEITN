@@ -1,0 +1,24 @@
+{
+  "name": "n8n-workflow-cli",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "bin": {
+    "wf": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup && npm link",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "wf": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.0",
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.28.0",
+    "glob": "^13.0.6",
+    "js-yaml": "^4.1.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}

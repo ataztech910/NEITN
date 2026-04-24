@@ -1,0 +1,4 @@
+id: test_workflow
+name: Test Workflow
+entry: manual-trigger
+settings: {}

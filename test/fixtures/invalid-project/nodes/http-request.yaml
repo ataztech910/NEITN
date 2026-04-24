@@ -1,0 +1,10 @@
+id: manual-trigger
+name: HTTP Request
+type: n8n-nodes-base.httpRequest
+params:
+  method: GET
+  url: https://httpbin.org/get
+credentials: {}
+ui:
+  column: 1
+  row: 0

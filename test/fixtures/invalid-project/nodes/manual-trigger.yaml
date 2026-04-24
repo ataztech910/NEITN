@@ -1,0 +1,8 @@
+id: manual-trigger
+name: Manual Trigger
+type: n8n-nodes-base.manualTrigger
+params: {}
+credentials: {}
+ui:
+  column: 0
+  row: 0
