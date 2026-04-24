@@ -12,7 +12,7 @@ export function validate(projectDir: string) {
     process.exit(1)
   }
 
-  const validationDiagnostics = validateProject(project)
+  const validationDiagnostics = validateProject(project, projectDir)
 
   const allDiagnostics = [...loadDiagnostics, ...validationDiagnostics]
 

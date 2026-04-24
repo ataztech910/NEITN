@@ -1,6 +1,6 @@
 import { Project } from './types'
 import { readFileSync, existsSync } from 'fs'
-import { join, dirname } from 'path'
+import { join } from 'path'
 
 export interface N8nWorkflow {
   name: string
@@ -8,6 +8,7 @@ export interface N8nWorkflow {
   connections: Record<string, N8nConnections>
   active: boolean
   settings: Record<string, any>
+  [key: string]: any
 }
 
 export interface N8nNode {
@@ -17,7 +18,8 @@ export interface N8nNode {
   typeVersion: number
   position: [number, number]
   id: string
-  credentials: Record<string, any>
+  credentials?: Record<string, any>
+  [key: string]: any
 }
 
 export interface N8nConnections {
@@ -30,14 +32,25 @@ export interface N8nConnection {
   index: number
 }
 
-export function compileProject(project: Project): N8nWorkflow {
+export function compileProject(project: Project, projectDir = process.cwd()): N8nWorkflow {
+  const nodeNameById = Object.fromEntries(project.nodes.map(node => [node.id, node.name]))
   const nodes: N8nNode[] = project.nodes.map(node => {
     const params = { ...node.params }
+    const protectedExtraKeys = new Set([
+      'id',
+      'name',
+      'type',
+      'typeVersion',
+      'parameters',
+      'position',
+      'credentials'
+    ])
 
     if (params.jsCodeFrom) {
       const codeFile = params.jsCodeFrom
-      const compiledFile = codeFile.replace(/^code\//, 'dist/code/').replace(/\.ts$/, '.js')
-      const projectDir = process.cwd() // Assuming compile is run from project dir
+      const compiledFile = codeFile
+        .replace(/^code\//, 'dist/code/')
+        .replace(/\.(ts|js)$/, '.js')
 
       const fullPath = join(projectDir, compiledFile)
       if (!existsSync(fullPath)) {
@@ -53,15 +66,47 @@ export function compileProject(project: Project): N8nWorkflow {
       delete params.jsCodeFrom
     }
 
-    return {
+    if (node.extra) {
+      for (const key of Object.keys(node.extra)) {
+        if (protectedExtraKeys.has(key)) {
+          throw new Error(`Node ${node.id}: extra must not override protected field: ${key}`)
+        }
+      }
+    }
+
+    const positionX = typeof node.ui.x === 'number'
+      ? node.ui.x
+      : (node.ui.column ?? 0) * 300
+    const positionY = typeof node.ui.y === 'number'
+      ? node.ui.y
+      : (node.ui.row ?? 0) * 200
+
+    const compiledNode: N8nNode = {
       parameters: params,
       name: node.name,
       type: node.type,
-      typeVersion: 1,
-      position: [node.ui.column * 300, node.ui.row * 200],
-      id: node.id,
-      credentials: node.credentials
+      typeVersion: node.typeVersion ?? 1,
+      position: [positionX, positionY],
+      id: node.id
     }
+
+    if (node.credentials) {
+      compiledNode.credentials = Object.fromEntries(
+        Object.entries(node.credentials).map(([name, reference]) => {
+          if (typeof reference === 'string') {
+            return [name, { name: reference }]
+          }
+
+          return [name, reference]
+        })
+      )
+    }
+
+    if (node.extra) {
+      Object.assign(compiledNode, node.extra)
+    }
+
+    return compiledNode
   })
 
   const connections: Record<string, N8nConnections> = {}
@@ -71,27 +116,35 @@ export function compileProject(project: Project): N8nWorkflow {
     const to = edge.to
     const branch = edge.branch
     const branchIndex = branch === 'false' || branch === 'error' ? 1 : 0
+    const fromName = nodeNameById[from] ?? from
+    const toName = nodeNameById[to] ?? to
 
-    if (!connections[from]) {
-      connections[from] = { main: [] }
+    if (!connections[fromName]) {
+      connections[fromName] = { main: [] }
     }
 
-    while (connections[from].main.length <= branchIndex) {
-      connections[from].main.push([])
+    while (connections[fromName].main.length <= branchIndex) {
+      connections[fromName].main.push([])
     }
 
-    connections[from].main[branchIndex].push({
-      node: to,
+    connections[fromName].main[branchIndex].push({
+      node: toName,
       type: 'main',
       index: 0
     })
   }
 
-  return {
+  const compiledWorkflow: N8nWorkflow = {
     name: project.flow.name,
     nodes,
     connections,
     active: false,
     settings: project.flow.settings
   }
+
+  if (project.flow.extra) {
+    Object.assign(compiledWorkflow, project.flow.extra)
+  }
+
+  return compiledWorkflow
 }

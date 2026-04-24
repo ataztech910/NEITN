@@ -5,7 +5,11 @@ import { codeBuild } from './code-build'
 import { writeFileSync, mkdirSync } from 'fs'
 import { join } from 'path'
 
-export async function compile(projectDir: string) {
+export interface CompileOptions {
+  noCodeBuild?: boolean
+}
+
+export async function compile(projectDir: string, options: CompileOptions = {}) {
   const { project, diagnostics: loadDiagnostics } = loadProject(projectDir)
 
   if (!project) {
@@ -16,7 +20,7 @@ export async function compile(projectDir: string) {
     process.exit(1)
   }
 
-  const validationDiagnostics = validateProject(project)
+  const validationDiagnostics = validateProject(project, projectDir)
 
   const allDiagnostics = [...loadDiagnostics, ...validationDiagnostics]
 
@@ -30,12 +34,12 @@ export async function compile(projectDir: string) {
 
   // Check if any node has jsCodeFrom, if so, build code
   const hasJsCodeFrom = project.nodes.some(node => node.params.jsCodeFrom)
-  if (hasJsCodeFrom) {
+  if (hasJsCodeFrom && !options.noCodeBuild) {
     console.log('Building code files...')
     await codeBuild(projectDir)
   }
 
-  const workflow = compileProject(project)
+  const workflow = compileProject(project, projectDir)
 
   const distDir = join(projectDir, 'dist')
   mkdirSync(distDir, { recursive: true })

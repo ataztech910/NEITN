@@ -8,9 +8,15 @@ import { migrate } from './commands/migrate'
 import { doctor } from './commands/doctor'
 import { codeBuild } from './commands/code-build'
 import { codeTest } from './commands/code-test'
+import { build } from './commands/build'
+import { importWorkflow } from './commands/import'
 
-async function main() {
-  const [, , command, ...args] = process.argv
+function parseProjectDir(args: string[]): string {
+  return args.find(arg => !arg.startsWith('--')) || '.'
+}
+
+export async function main(argv = process.argv) {
+  const [, , command, ...args] = argv
 
   if (command === 'init') {
     const projectName = args[0]
@@ -23,8 +29,9 @@ async function main() {
     const projectDir = args[0] || '.'
     validate(projectDir)
   } else if (command === 'compile') {
-    const projectDir = args[0] || '.'
-    await compile(projectDir)
+    const projectDir = parseProjectDir(args)
+    const noCodeBuild = args.includes('--no-code-build')
+    await compile(projectDir, { noCodeBuild })
   } else if (command === 'apply') {
     const patchFile = args[0]
     if (!patchFile) {
@@ -59,10 +66,31 @@ async function main() {
   } else if (command === 'code:test') {
     const projectDir = args[0] || '.'
     codeTest(projectDir)
+  } else if (command === 'build') {
+    const projectDir = parseProjectDir(args)
+    const skipTests = args.includes('--skip-tests')
+    const skipDoctor = args.includes('--skip-doctor')
+    await build(projectDir, { skipTests, skipDoctor })
+  } else if (command === 'import') {
+    const workflowPath = args.find(arg => !arg.startsWith('--'))
+    if (!workflowPath) {
+      console.error('Usage: wf import <workflow.json> [--extract-code] [--overwrite]')
+      process.exit(1)
+    }
+    const overwrite = args.includes('--overwrite')
+    const importOptions = args.includes('--extract-code')
+      ? { overwrite, extractCode: true }
+      : { overwrite }
+    importWorkflow(workflowPath, process.cwd(), importOptions)
   } else {
     console.error('Unknown command')
     process.exit(1)
   }
 }
 
-main().catch(console.error)
+if (require.main === module) {
+  main().catch(error => {
+    console.error(error)
+    process.exitCode = 1
+  })
+}

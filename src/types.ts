@@ -3,6 +3,7 @@ export interface Flow {
   name: string
   entry: string
   settings: Record<string, any>
+  extra?: Record<string, any>
 }
 
 export interface Node {
@@ -10,10 +11,14 @@ export interface Node {
   name: string
   type: string
   params: Record<string, any>
-  credentials: Record<string, any>
+  typeVersion?: number
+  extra?: Record<string, any>
+  credentials?: Record<string, string | { name?: string; id?: string } | Record<string, never>>
   ui: {
-    column: number
-    row: number
+    column?: number
+    row?: number
+    x?: number
+    y?: number
   }
   contract?: {
     input?: {

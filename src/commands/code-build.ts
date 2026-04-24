@@ -12,21 +12,25 @@ export async function codeBuild(projectDir: string) {
     return
   }
 
-  // Find all .ts files in code/ excluding __tests__
-  const tsFiles = glob.sync('**/*.ts', { cwd: codeDir }).filter(file => !file.includes('__tests__'))
+  // Find source files in code/ excluding tests
+  const sourceFiles = glob
+    .sync('**/*.{ts,js}', { cwd: codeDir })
+    .filter(file => !file.includes('__tests__'))
+    .filter(file => !file.endsWith('.test.ts') && !file.endsWith('.test.js'))
 
-  if (tsFiles.length === 0) {
-    console.log('No TypeScript files to build')
+  if (sourceFiles.length === 0) {
+    console.log('No code files to build')
     return
   }
 
   mkdirSync(distCodeDir, { recursive: true })
 
-  const entryPoints = tsFiles.map(file => join(codeDir, file))
+  const entryPoints = sourceFiles.map(file => join(codeDir, file))
 
   await build({
     entryPoints,
     outdir: distCodeDir,
+    outbase: codeDir,
     format: 'cjs',
     target: 'node18',
     sourcemap: false,
@@ -34,5 +38,5 @@ export async function codeBuild(projectDir: string) {
     bundle: false,
   })
 
-  console.log(`Built ${tsFiles.length} code files to ${distCodeDir}`)
+  console.log(`Built ${sourceFiles.length} code files to ${distCodeDir}`)
 }
