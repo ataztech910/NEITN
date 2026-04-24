@@ -1,6 +1,6 @@
 # Agents Documentation
 
-## n8n Workflow Editor Skill
+## neitn Skill
 
 ### DSL Conventions
 
@@ -10,3 +10,9 @@ For generated node DSL:
 - Use `ui.row` starting from 1
 - Keep ids snake_case
 - Keep Patch Schema v0 unchanged
+
+Primary skill entrypoint:
+- `.agents/skills/neitn/SKILL.md`
+
+Reference docs:
+- `docs/neitn/`

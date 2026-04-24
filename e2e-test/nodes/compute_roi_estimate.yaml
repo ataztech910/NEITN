@@ -1,9 +1,0 @@
-id: compute_roi_estimate
-name: Compute ROI Estimate
-type: n8n-nodes-base.code
-params:
-  jsCodeFrom: code/compute_roi_estimate.runtime.ts
-ui:
-  x: 1540
-  'y': -160
-typeVersion: 2

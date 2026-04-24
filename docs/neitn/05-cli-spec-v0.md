@@ -2,12 +2,12 @@
 
 ## Commands
 
-wf init
-wf validate
-wf compile
-wf apply
-wf doctor
-wf inspect
+neitn init
+neitn validate
+neitn compile
+neitn apply
+neitn doctor
+neitn inspect
 
 ## Principles
 

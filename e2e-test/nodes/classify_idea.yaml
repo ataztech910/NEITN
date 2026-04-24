@@ -1,9 +1,0 @@
-id: classify_idea
-name: Classify Idea
-type: n8n-nodes-base.code
-params:
-  jsCodeFrom: code/classify_idea.runtime.ts
-ui:
-  x: -2040
-  'y': 0
-typeVersion: 2

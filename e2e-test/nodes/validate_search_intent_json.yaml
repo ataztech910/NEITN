@@ -1,9 +1,0 @@
-id: validate_search_intent_json
-name: Validate Search Intent JSON
-type: n8n-nodes-base.code
-params:
-  jsCodeFrom: code/validate_search_intent_json.runtime.ts
-ui:
-  x: -1140
-  'y': 0
-typeVersion: 2

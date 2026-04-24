@@ -22,7 +22,7 @@ export async function main(argv = process.argv) {
   if (command === 'init') {
     const projectName = args[0]
     if (!projectName) {
-      console.error('Usage: wf init <project-name>')
+      console.error('Usage: neitn init <project-name>')
       process.exit(1)
     }
     init(projectName)
@@ -36,7 +36,7 @@ export async function main(argv = process.argv) {
   } else if (command === 'apply') {
     const patchFile = args[0]
     if (!patchFile) {
-      console.error('Usage: wf apply <patch-file>')
+      console.error('Usage: neitn apply <patch-file>')
       process.exit(1)
     }
     apply(patchFile)
@@ -70,7 +70,7 @@ export async function main(argv = process.argv) {
   } else if (command === 'code:scaffold') {
     const rawNodeId = args.find(arg => !arg.startsWith('--'))
     if (!rawNodeId) {
-      console.error('Usage: wf code:scaffold <node_id> [--node]')
+      console.error('Usage: neitn code:scaffold <node_id> [--node]')
       process.exit(1)
     }
     codeScaffold(process.cwd(), rawNodeId, { node: args.includes('--node') })
@@ -82,7 +82,7 @@ export async function main(argv = process.argv) {
   } else if (command === 'import') {
     const workflowPath = args.find(arg => !arg.startsWith('--'))
     if (!workflowPath) {
-      console.error('Usage: wf import <workflow.json> [--extract-code] [--overwrite]')
+      console.error('Usage: neitn import <workflow.json> [--extract-code] [--overwrite]')
       process.exit(1)
     }
     const overwrite = args.includes('--overwrite')

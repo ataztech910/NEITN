@@ -128,13 +128,13 @@ User or system reviews:
 Command:
 
 ```
-wf apply <patch-file>
+neitn apply <patch-file>
 ```
 
 Example:
 
 ```
-wf apply .workflow/patches/2026-04-23T12-30-00-create-initial-flow.patch.json
+neitn apply .workflow/patches/2026-04-23T12-30-00-create-initial-flow.patch.json
 ```
 
 ---
@@ -142,7 +142,7 @@ wf apply .workflow/patches/2026-04-23T12-30-00-create-initial-flow.patch.json
 ### Step 4 — Validate
 
 ```
-wf validate
+neitn validate
 ```
 
 Must pass before continuing.
@@ -152,7 +152,7 @@ Must pass before continuing.
 ### Step 5 — Compile
 
 ```
-wf compile
+neitn compile
 ```
 
 Output:
@@ -209,7 +209,7 @@ Before applying patch:
 Future CLI:
 
 ```
-wf apply --dry-run <patch>
+neitn apply --dry-run <patch>
 ```
 
 ---
@@ -230,9 +230,9 @@ AI must NOT:
 
 ```
 User → AI → patch.json
-      → wf apply
-      → wf validate
-      → wf compile
+      → neitn apply
+      → neitn validate
+      → neitn compile
 ```
 
 ---

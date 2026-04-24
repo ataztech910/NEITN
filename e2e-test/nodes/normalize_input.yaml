@@ -1,9 +1,0 @@
-id: normalize_input
-name: Normalize Input
-type: n8n-nodes-base.code
-params:
-  jsCodeFrom: code/normalize_input.runtime.ts
-ui:
-  x: -2260
-  'y': 0
-typeVersion: 2

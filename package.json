@@ -1,15 +1,37 @@
 {
-  "name": "n8n-workflow-cli",
+  "name": "neitn",
   "version": "0.1.0",
+  "description": "AI-native modular n8n workflow CLI with DSL, import/build pipeline, and bundled skills.",
+  "license": "MIT",
   "main": "dist/index.js",
   "bin": {
-    "wf": "dist/index.js"
+    "neitn": "dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "docs/neitn",
+    ".agents/AGENTS.md",
+    ".agents/skills/neitn"
+  ],
   "scripts": {
-    "build": "tsup && npm link",
+    "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest",
-    "wf": "node dist/index.js"
+    "neitn": "node dist/index.js",
+    "link:global": "npm link"
+  },
+  "keywords": [
+    "n8n",
+    "workflow",
+    "dsl",
+    "ai",
+    "cli",
+    "automation"
+  ],
+  "engines": {
+    "node": ">=18"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.0",

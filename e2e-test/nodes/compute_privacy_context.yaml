@@ -1,9 +1,0 @@
-id: compute_privacy_context
-name: Compute Privacy Context
-type: n8n-nodes-base.code
-params:
-  jsCodeFrom: code/compute_privacy_context.runtime.ts
-ui:
-  x: 1760
-  'y': -160
-typeVersion: 2

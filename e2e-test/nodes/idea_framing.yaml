@@ -1,9 +1,0 @@
-id: idea_framing
-name: Idea Framing
-type: n8n-nodes-base.code
-params:
-  jsCodeFrom: code/idea_framing.runtime.ts
-ui:
-  x: -1820
-  'y': 0
-typeVersion: 2

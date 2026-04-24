@@ -54,7 +54,7 @@ export function compileProject(project: Project, projectDir = process.cwd()): N8
 
       const fullPath = join(projectDir, compiledFile)
       if (!existsSync(fullPath)) {
-        throw new Error(`Compiled code file not found: ${fullPath}. Run 'wf code:build' first.`)
+        throw new Error(`Compiled code file not found: ${fullPath}. Run 'neitn code:build' first.`)
       }
 
       const jsCode = readFileSync(fullPath, 'utf-8')

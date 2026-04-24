@@ -1,9 +1,0 @@
-id: validate_final_decision_json
-name: Validate Final Decision JSON
-type: n8n-nodes-base.code
-params:
-  jsCodeFrom: code/validate_final_decision_json.runtime.ts
-ui:
-  x: 2000
-  'y': 0
-typeVersion: 2
