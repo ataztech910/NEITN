@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { init } from '../src/commands/init'
 import { mkdirSync, writeFileSync } from 'fs'
 import { join } from 'path'
+import { installAgents } from '../src/agents'
 
 // Mock fs functions
 vi.mock('fs', () => ({
@@ -11,6 +12,10 @@ vi.mock('fs', () => ({
 
 vi.mock('path', () => ({
   join: vi.fn((...args) => args.join('/')),
+}))
+
+vi.mock('../src/agents', () => ({
+  installAgents: vi.fn(),
 }))
 
 describe('init', () => {
@@ -33,5 +38,11 @@ describe('init', () => {
       '/current/dir/test-project/flow.yaml',
       'id: test_project\nname: Test Project\nentry: ""\nsettings: {}\n'
     )
+  })
+
+  it('installs AI contract when init is called with --ai options', () => {
+    init('test-project', { ai: 'codex' })
+
+    expect(installAgents).toHaveBeenCalledWith('/current/dir/test-project', { ai: 'codex' })
   })
 })

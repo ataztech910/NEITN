@@ -2,14 +2,23 @@
   "name": "neitn",
   "version": "0.1.0",
   "description": "AI-native modular n8n workflow CLI with DSL, import/build pipeline, and bundled skills.",
+  "homepage": "https://github.com/ataztech910/neitn#readme",
   "license": "MIT",
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ataztech910/neitn.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ataztech910/neitn/issues"
+  },
   "bin": {
     "neitn": "dist/index.js"
   },
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE",
     "docs/neitn",
     ".agents/AGENTS.md",
