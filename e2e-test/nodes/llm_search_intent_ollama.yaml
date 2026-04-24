@@ -1,0 +1,57 @@
+id: llm_search_intent_ollama
+name: LLM Search Intent - Ollama
+type: n8n-nodes-base.httpRequest
+params:
+  method: POST
+  url: '={{ $json.llm.ollama_host + ''/api/chat'' }}'
+  sendHeaders: true
+  headerParameters:
+    parameters:
+      - name: content-type
+        value: application/json
+  sendBody: true
+  specifyBody: json
+  jsonBody: |-
+    ={{ { model: $json.llm.model, stream: false, format: 'json', options: { temperature: 0.1, num_predict: 350, num_ctx: 4096 }, messages: [{ role: 'system', content: 'You classify one dominant Google search intent. Return valid JSON only, no markdown, no prose outside JSON.' }, { role: 'user', content: `Identify the PRIMARY Google search intent behind this idea.
+
+    The goal is to prevent SEO keyword drift.
+
+    Input:
+    Idea: ${$json.input.idea}
+    Region: ${$json.input.region}
+    SEO language: ${$json.input.seo_language}
+
+    Idea classification JSON:
+    ${JSON.stringify($json.idea_classification, null, 2)}
+
+    Options:
+    - problem_diagnosis
+    - finding_specialist
+    - booking_service
+    - learning_how_to_do
+    - buying_product
+
+    Rules:
+    - Return ONE dominant intent only.
+    - Do not choose booking_service unless the core user action is booking an appointment or reservation.
+    - Do not choose learning_how_to_do for software tutorials, coding, API usage, or building the product.
+    - For home repair, renovation, construction, or selecting repair specialists, prefer problem_diagnosis or finding_specialist.
+    - For marketplaces, choose the intent behind the buyer's immediate search, not the marketplace category.
+    - Respect the original idea category. Do not convert local services into startup tooling.
+
+    Return one JSON object:
+    {
+      "search_intent": "problem_diagnosis|finding_specialist|booking_service|learning_how_to_do|buying_product",
+      "intent_description": "string",
+      "search_persona": "string",
+      "must_include": ["string"],
+      "must_exclude": ["string"]
+    }
+
+    Return valid JSON only, no markdown, no prose outside JSON.` }] } }}
+  options:
+    timeout: 600000
+ui:
+  x: -1380
+  'y': 120
+typeVersion: 4.2

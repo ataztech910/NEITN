@@ -1,0 +1,9 @@
+id: validate_seo_keywords_json
+name: Validate SEO Keywords JSON
+type: n8n-nodes-base.code
+params:
+  jsCodeFrom: code/validate_seo_keywords_json.runtime.ts
+ui:
+  x: -480
+  'y': 0
+typeVersion: 2

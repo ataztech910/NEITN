@@ -1,0 +1,9 @@
+id: assemble_final_response
+name: Assemble Final Response
+type: n8n-nodes-base.code
+params:
+  jsCodeFrom: code/assemble_final_response.runtime.ts
+ui:
+  x: 2220
+  'y': 0
+typeVersion: 2

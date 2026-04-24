@@ -1,0 +1,9 @@
+id: validate_packaging_json
+name: Validate Packaging JSON
+type: n8n-nodes-base.code
+params:
+  jsCodeFrom: code/validate_packaging_json.runtime.ts
+ui:
+  x: 640
+  'y': 0
+typeVersion: 2

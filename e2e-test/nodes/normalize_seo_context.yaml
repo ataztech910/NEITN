@@ -1,0 +1,9 @@
+id: normalize_seo_context
+name: Normalize SEO Context
+type: n8n-nodes-base.code
+params:
+  jsCodeFrom: code/normalize_seo_context.runtime.ts
+ui:
+  x: -40
+  'y': 0
+typeVersion: 2

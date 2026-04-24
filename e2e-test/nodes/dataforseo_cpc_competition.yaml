@@ -1,0 +1,22 @@
+id: dataforseo_cpc_competition
+name: DataForSEO CPC Competition
+type: n8n-nodes-base.httpRequest
+params:
+  method: POST
+  url: https://api.dataforseo.com/v3/keywords_data/google_ads/search_volume/live
+  authentication: genericCredentialType
+  genericAuthType: httpBasicAuth
+  sendHeaders: true
+  headerParameters:
+    parameters:
+      - name: content-type
+        value: application/json
+  sendBody: true
+  specifyBody: json
+  jsonBody: '={{ [{ keywords: $json.seo_context.keywords ?? $json.seo_keywords.keywords, location_name: $json.input.region, language_code: $json.input.seo_language }] }}'
+  options:
+    timeout: 90000
+ui:
+  x: 180
+  'y': -260
+typeVersion: 4.2

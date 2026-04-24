@@ -174,7 +174,9 @@ describe('importWorkflow', () => {
     expect(existsSync(join(projectDir, 'nodes', 'webhook.yaml'))).toBe(true)
     expect(existsSync(join(projectDir, 'nodes', 'normalize_input.yaml'))).toBe(true)
     expect(existsSync(join(projectDir, 'code', 'normalize_input.ts'))).toBe(true)
-    expect(readFileSync(join(projectDir, 'code', 'normalize_input.ts'), 'utf-8')).toContain('const item = $input.first();')
+    expect(existsSync(join(projectDir, 'code', 'normalize_input.runtime.ts'))).toBe(true)
+    expect(existsSync(join(projectDir, 'code', '__tests__', 'normalize_input.test.ts'))).toBe(true)
+    expect(readFileSync(join(projectDir, 'code', 'normalize_input.runtime.ts'), 'utf-8')).toContain('const item = $input.first();')
 
     const flow = yaml.load(readFileSync(join(projectDir, 'flow.yaml'), 'utf-8')) as any
     expect(flow.id).toBe('idea_evaluator_mvp')
@@ -203,6 +205,9 @@ describe('importWorkflow', () => {
     const ifNode = yaml.load(readFileSync(join(projectDir, 'nodes', 'if_check.yaml'), 'utf-8')) as any
     expect(ifNode.extra).toEqual({ notesInFlow: true })
 
+    const codeNode = yaml.load(readFileSync(join(projectDir, 'nodes', 'normalize_input.yaml'), 'utf-8')) as any
+    expect(codeNode.params.jsCodeFrom).toBe('code/normalize_input.runtime.ts')
+
     const edges = yaml.load(readFileSync(join(projectDir, 'edges', 'main.yaml'), 'utf-8')) as any
     expect(edges.connections).toEqual([
       { from: 'webhook', to: 'normalize_input' },
@@ -229,7 +234,8 @@ describe('importWorkflow', () => {
     expect(compiledWebhook.position).toEqual([-2260, 0])
     expect(compiledHttp.typeVersion).toBe(4.2)
     expect(compiledHttp.parameters).toEqual(original.nodes.find(node => node.name === 'HTTP Request')!.parameters)
-    expect(compiledCode.parameters.jsCode).toContain('const item = $input.first();')
+    expect(compiledCode.parameters.jsCode).toContain('$input.first()')
+    expect(compiledCode.parameters.jsCode).toContain('return [{ json: item.json }];')
     expect(compiledCode.parameters.jsCodeFrom).toBeUndefined()
     expect(compiled.nodes.map((node: any) => node.name).sort()).toEqual([
       'Failure',

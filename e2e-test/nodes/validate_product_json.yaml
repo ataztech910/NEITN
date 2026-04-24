@@ -1,0 +1,9 @@
+id: validate_product_json
+name: Validate Product JSON
+type: n8n-nodes-base.code
+params:
+  jsCodeFrom: code/validate_product_json.runtime.ts
+ui:
+  x: 1320
+  'y': 0
+typeVersion: 2

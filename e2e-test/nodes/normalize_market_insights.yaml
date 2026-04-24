@@ -1,0 +1,9 @@
+id: normalize_market_insights
+name: Normalize Market Insights
+type: n8n-nodes-base.code
+params:
+  jsCodeFrom: code/normalize_market_insights.runtime.ts
+ui:
+  x: 620
+  'y': -260
+typeVersion: 2

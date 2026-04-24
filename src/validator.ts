@@ -112,6 +112,12 @@ export function validateProject(project: Project, projectDir = process.cwd()): D
         const fullPath = join(projectDir, codeFile)
         if (!existsSync(fullPath)) {
           diagnostics.push({ message: `Node ${node.id}: jsCodeFrom file not found: ${codeFile}` })
+        } else if (codeFile.includes('.runtime.')) {
+          const pureFile = codeFile.replace('.runtime.', '.')
+          const purePath = join(projectDir, pureFile)
+          if (!existsSync(purePath)) {
+            diagnostics.push({ message: `Node ${node.id}: split code logic file not found: ${pureFile}` })
+          }
         }
       }
     }

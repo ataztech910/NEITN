@@ -1,0 +1,23 @@
+id: provider_switch_1
+name: Provider Switch 1
+type: n8n-nodes-base.if
+params:
+  conditions:
+    options:
+      caseSensitive: true
+      leftValue: ''
+      typeValidation: strict
+      version: 2
+    conditions:
+      - id: provider-is-claude-step-1
+        leftValue: '={{ $json.llm.provider }}'
+        rightValue: claude
+        operator:
+          type: string
+          operation: equals
+    combinator: and
+  options: {}
+ui:
+  x: 180
+  'y': 0
+typeVersion: 2.2

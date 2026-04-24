@@ -1,6 +1,7 @@
 import { readFileSync, existsSync, mkdirSync, writeFileSync, readdirSync, rmSync } from 'fs'
-import { join } from 'path'
+import { join, dirname } from 'path'
 import * as yaml from 'js-yaml'
+import { generateCodeNodeSplitTemplates, normalizeNodeId } from '../code-node'
 
 interface ImportOptions {
   overwrite?: boolean
@@ -38,18 +39,6 @@ const KNOWN_NODE_FIELDS = new Set([
   'parameters',
   'credentials'
 ])
-
-function toSnakeCase(value: string): string {
-  const normalized = value
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '')
-    .replace(/_+/g, '_')
-
-  return normalized || 'node'
-}
 
 function ensureUniqueId(baseId: string, usedIds: Set<string>): string {
   let nextId = baseId
@@ -174,11 +163,7 @@ function clearImportedProjectFiles(projectDir: string) {
   }
 
   if (existsSync(codeDir)) {
-    for (const file of readdirSync(codeDir)) {
-      if (file.endsWith('.ts') || file.endsWith('.js')) {
-        rmSync(join(codeDir, file))
-      }
-    }
+    rmSync(codeDir, { recursive: true, force: true })
   }
 }
 
@@ -202,18 +187,30 @@ export function importWorkflow(workflowPath: string, projectDir: string, options
   const codeFiles: Array<{ path: string; content: string }> = []
 
   for (const node of workflow.nodes) {
-    const nodeId = ensureUniqueId(toSnakeCase(node.name), usedIds)
+    const nodeId = ensureUniqueId(normalizeNodeId(node.name), usedIds)
     nodeIdByName[node.name] = nodeId
     nodeTypeById[nodeId] = node.type
 
     const params = { ...(node.parameters ?? {}) }
     if (options.extractCode !== false && node.type === 'n8n-nodes-base.code' && typeof params.jsCode === 'string') {
+      const runtimeSource = params.jsCode.endsWith('\n') ? params.jsCode : `${params.jsCode}\n`
+      const splitFiles = generateCodeNodeSplitTemplates(nodeId, {
+        runtimeSource
+      })
       codeFiles.push({
         path: join('code', `${nodeId}.ts`),
-        content: params.jsCode.endsWith('\n') ? params.jsCode : `${params.jsCode}\n`
+        content: splitFiles.pureContent
+      })
+      codeFiles.push({
+        path: join('code', `${nodeId}.runtime.ts`),
+        content: splitFiles.runtimeContent
+      })
+      codeFiles.push({
+        path: join('code', '__tests__', `${nodeId}.test.ts`),
+        content: splitFiles.testContent
       })
       delete params.jsCode
-      params.jsCodeFrom = `code/${nodeId}.ts`
+      params.jsCodeFrom = `code/${nodeId}.runtime.ts`
     }
 
     const credentials = mapCredentials(node.credentials)
@@ -264,7 +261,7 @@ export function importWorkflow(workflowPath: string, projectDir: string, options
   )
 
   const flow: Record<string, any> = {
-    id: toSnakeCase(workflow.name || 'workflow'),
+    id: normalizeNodeId(workflow.name || 'workflow'),
     name: workflow.name || 'Imported Workflow',
     entry,
     settings: workflow.settings ?? {}
@@ -297,6 +294,7 @@ export function importWorkflow(workflowPath: string, projectDir: string, options
   }
 
   for (const file of filesToWrite) {
+    mkdirSync(dirname(join(projectDir, file.path)), { recursive: true })
     writeFileSync(join(projectDir, file.path), file.content)
   }
 

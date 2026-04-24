@@ -1,0 +1,23 @@
+id: provider_switch_search_intent
+name: Provider Switch Search Intent
+type: n8n-nodes-base.if
+params:
+  conditions:
+    options:
+      caseSensitive: true
+      leftValue: ''
+      typeValidation: strict
+      version: 2
+    conditions:
+      - id: provider-is-claude-search-intent
+        leftValue: '={{ $json.llm.provider }}'
+        rightValue: claude
+        operator:
+          type: string
+          operation: equals
+    combinator: and
+  options: {}
+ui:
+  x: -1600
+  'y': 0
+typeVersion: 2.2

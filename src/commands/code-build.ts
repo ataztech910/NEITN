@@ -1,5 +1,5 @@
 import { build } from 'esbuild'
-import { join, dirname } from 'path'
+import { join } from 'path'
 import { mkdirSync, existsSync } from 'fs'
 import { glob } from 'glob'
 
@@ -35,7 +35,7 @@ export async function codeBuild(projectDir: string) {
     target: 'node18',
     sourcemap: false,
     minify: false,
-    bundle: false,
+    bundle: true,
   })
 
   console.log(`Built ${sourceFiles.length} code files to ${distCodeDir}`)

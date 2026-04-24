@@ -50,7 +50,7 @@ describe('code node source files', () => {
 
     const workflow = JSON.parse(readFileSync(join(projectDir, 'dist', 'code_flow.workflow.json'), 'utf-8'))
     expect(workflow.nodes).toHaveLength(1)
-    expect(workflow.nodes[0].parameters.jsCode).toContain('const value = 1;')
+    expect(workflow.nodes[0].parameters.jsCode).toContain('console.log(value);')
     expect(workflow.nodes[0].parameters.jsCodeFrom).toBeUndefined()
 
     rmSync(projectDir, { recursive: true, force: true })

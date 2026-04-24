@@ -10,6 +10,7 @@ import { codeBuild } from './commands/code-build'
 import { codeTest } from './commands/code-test'
 import { build } from './commands/build'
 import { importWorkflow } from './commands/import'
+import { codeScaffold } from './commands/code-scaffold'
 
 function parseProjectDir(args: string[]): string {
   return args.find(arg => !arg.startsWith('--')) || '.'
@@ -66,6 +67,13 @@ export async function main(argv = process.argv) {
   } else if (command === 'code:test') {
     const projectDir = args[0] || '.'
     codeTest(projectDir)
+  } else if (command === 'code:scaffold') {
+    const rawNodeId = args.find(arg => !arg.startsWith('--'))
+    if (!rawNodeId) {
+      console.error('Usage: wf code:scaffold <node_id> [--node]')
+      process.exit(1)
+    }
+    codeScaffold(process.cwd(), rawNodeId, { node: args.includes('--node') })
   } else if (command === 'build') {
     const projectDir = parseProjectDir(args)
     const skipTests = args.includes('--skip-tests')
