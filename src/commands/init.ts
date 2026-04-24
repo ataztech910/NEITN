@@ -1,7 +1,12 @@
 import { mkdirSync, writeFileSync } from 'fs'
 import { join } from 'path'
+import { AgentProvider, installAgents } from '../agents'
 
-export function init(projectName: string) {
+export interface InitOptions {
+  ai?: AgentProvider
+}
+
+export function init(projectName: string, options: InitOptions = {}) {
   const projectDir = join(process.cwd(), projectName)
 
   // Create directories
@@ -22,6 +27,10 @@ entry: ""
 settings: {}
 `
   writeFileSync(join(projectDir, 'flow.yaml'), flowContent)
+
+  if (options.ai) {
+    installAgents(projectDir, { ai: options.ai })
+  }
 
   console.log(`Initialized workflow project: ${projectName}`)
 }

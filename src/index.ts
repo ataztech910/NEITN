@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { AgentProvider, installAgents } from './agents'
 import { init } from './commands/init'
 import { validate } from './commands/validate'
 import { compile } from './commands/compile'
@@ -13,19 +14,52 @@ import { importWorkflow } from './commands/import'
 import { codeScaffold } from './commands/code-scaffold'
 
 function parseProjectDir(args: string[]): string {
-  return args.find(arg => !arg.startsWith('--')) || '.'
+  return parsePositionalArg(args) || '.'
+}
+
+function parsePositionalArg(args: string[]): string | undefined {
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index]
+    if (arg === '--ai') {
+      index += 1
+      continue
+    }
+    if (!arg.startsWith('--')) {
+      return arg
+    }
+  }
+  return undefined
+}
+
+function parseAiProvider(args: string[]): AgentProvider | undefined {
+  const aiIndex = args.indexOf('--ai')
+  if (aiIndex === -1) {
+    return undefined
+  }
+
+  const provider = args[aiIndex + 1]
+
+  if (provider === 'codex' || provider === 'generic') {
+    return provider
+  }
+
+  console.error('Usage: --ai codex|generic')
+  process.exit(1)
 }
 
 export async function main(argv = process.argv) {
   const [, , command, ...args] = argv
 
   if (command === 'init') {
-    const projectName = args[0]
+    const projectName = parsePositionalArg(args)
     if (!projectName) {
-      console.error('Usage: neitn init <project-name>')
+      console.error('Usage: neitn init <project-name> [--ai codex|generic]')
       process.exit(1)
     }
-    init(projectName)
+    init(projectName, { ai: parseAiProvider(args) })
+  } else if (command === 'agents:install') {
+    const projectDir = parseProjectDir(args)
+    installAgents(projectDir, { ai: parseAiProvider(args) })
   } else if (command === 'validate') {
     const projectDir = args[0] || '.'
     validate(projectDir)
