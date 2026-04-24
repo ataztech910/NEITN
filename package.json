@@ -1,5 +1,5 @@
 {
-  "name": "neitn",
+  "name": "@neitn/cli",
   "version": "0.1.0",
   "description": "AI-native modular n8n workflow CLI with DSL, import/build pipeline, and bundled skills.",
   "homepage": "https://github.com/ataztech910/neitn#readme",
