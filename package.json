@@ -1,6 +1,6 @@
 {
   "name": "@neitn/cli",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "AI-native modular n8n workflow CLI with DSL, import/build pipeline, and bundled skills.",
   "homepage": "https://github.com/ataztech910/neitn#readme",
   "license": "MIT",
@@ -42,10 +42,12 @@
   "engines": {
     "node": ">=18"
   },
+  "dependencies": {
+    "esbuild": "^0.28.0"
+  },
   "devDependencies": {
     "@types/js-yaml": "^4.0.0",
     "@types/node": "^20.0.0",
-    "esbuild": "^0.28.0",
     "glob": "^13.0.6",
     "js-yaml": "^4.1.0",
     "tsup": "^8.0.0",

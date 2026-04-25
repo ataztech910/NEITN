@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neitn.dev/schemas/patch-schema.v0.json",
+  "title": "neitn Patch Schema v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "targetProject",
+    "summary",
+    "operations"
+  ],
+  "properties": {
+    "version": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "number" }
+      ]
+    },
+    "id": {
+      "type": "string"
+    },
+    "targetProject": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/assertExists" },
+          { "$ref": "#/$defs/assertNotExists" },
+          { "$ref": "#/$defs/createFile" },
+          { "$ref": "#/$defs/updateFields" },
+          { "$ref": "#/$defs/deleteFile" },
+          { "$ref": "#/$defs/renameFile" }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "baseOp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "target",
+        "reason"
+      ],
+      "properties": {
+        "op": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "assertExists": {
+      "allOf": [
+        { "$ref": "#/$defs/baseOp" },
+        {
+          "properties": {
+            "op": { "const": "assert_exists" }
+          }
+        }
+      ]
+    },
+    "assertNotExists": {
+      "allOf": [
+        { "$ref": "#/$defs/baseOp" },
+        {
+          "properties": {
+            "op": { "const": "assert_not_exists" }
+          }
+        }
+      ]
+    },
+    "createFile": {
+      "allOf": [
+        { "$ref": "#/$defs/baseOp" },
+        {
+          "required": [
+            "payload"
+          ],
+          "properties": {
+            "op": { "const": "create_file" },
+            "payload": {
+              "description": "For DSL YAML files, use an object payload. For source files like code/*.ts, use a string payload.",
+              "oneOf": [
+                { "type": "object" },
+                { "type": "array" },
+                { "type": "string" },
+                { "type": "number" },
+                { "type": "boolean" },
+                { "type": "null" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "updateFields": {
+      "allOf": [
+        { "$ref": "#/$defs/baseOp" },
+        {
+          "required": [
+            "updates"
+          ],
+          "properties": {
+            "op": { "const": "update_fields" },
+            "updates": {
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "deleteFile": {
+      "allOf": [
+        { "$ref": "#/$defs/baseOp" },
+        {
+          "properties": {
+            "op": { "const": "delete_file" }
+          }
+        }
+      ]
+    },
+    "renameFile": {
+      "allOf": [
+        { "$ref": "#/$defs/baseOp" },
+        {
+          "required": [
+            "newPath"
+          ],
+          "properties": {
+            "op": { "const": "rename_file" },
+            "newPath": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
