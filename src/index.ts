@@ -13,6 +13,32 @@ import { build } from './commands/build'
 import { importWorkflow } from './commands/import'
 import { codeScaffold } from './commands/code-scaffold'
 
+const CLI_VERSION = '0.1.0'
+
+function helpText() {
+  return `neitn
+
+Usage:
+  neitn help
+  neitn init <project-name> [--ai codex|generic]
+  neitn agents:install [path] [--ai codex|generic]
+  neitn validate [path]
+  neitn doctor [path]
+  neitn build [path] [--skip-tests] [--skip-doctor]
+  neitn compile [path] [--no-code-build]
+  neitn import <workflow.json> [--extract-code] [--overwrite]
+  neitn apply <patch-file>
+  neitn migrate [path]
+  neitn code:scaffold <node_id> [--node]
+  neitn code:test [path]
+  neitn code:build [path]
+
+Flags:
+  -h, --help     Show help
+  -v, --version  Show version
+`
+}
+
 function parseProjectDir(args: string[]): string {
   return parsePositionalArg(args) || '.'
 }
@@ -50,7 +76,11 @@ function parseAiProvider(args: string[]): AgentProvider | undefined {
 export async function main(argv = process.argv) {
   const [, , command, ...args] = argv
 
-  if (command === 'init') {
+  if (!command || command === 'help' || command === '--help' || command === '-h') {
+    console.log(helpText())
+  } else if (command === '--version' || command === '-v') {
+    console.log(CLI_VERSION)
+  } else if (command === 'init') {
     const projectName = parsePositionalArg(args)
     if (!projectName) {
       console.error('Usage: neitn init <project-name> [--ai codex|generic]')
@@ -125,7 +155,8 @@ export async function main(argv = process.argv) {
       : { overwrite }
     importWorkflow(workflowPath, process.cwd(), importOptions)
   } else {
-    console.error('Unknown command')
+    console.error(`Unknown command: ${command}`)
+    console.error(helpText())
     process.exit(1)
   }
 }

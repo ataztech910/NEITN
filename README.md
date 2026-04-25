@@ -31,7 +31,7 @@ Raw n8n workflow JSON is expensive for AI to edit well:
 ### From npm
 
 ```bash
-npm install -g neitn
+npm install -g @neitn/cli
 ```
 
 This installs the `neitn` CLI and an npm package that contains the bundled AI contract files.
@@ -62,6 +62,8 @@ npm run link:global
 ## Commands
 
 ```bash
+neitn help
+neitn --version
 neitn init my-flow
 neitn init my-flow --ai codex
 neitn agents:install . --ai codex

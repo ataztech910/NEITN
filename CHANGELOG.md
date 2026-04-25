@@ -4,6 +4,10 @@
 
 First public release of `neitn`.
 
+Published as:
+
+- `@neitn/cli`
+
 Included in this release:
 
 - modular workflow DSL with `flow.yaml`, `nodes/*.yaml`, `edges/*.yaml`

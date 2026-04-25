@@ -71,4 +71,32 @@ describe('main', () => {
 
     expect(installAgentsMock).toHaveBeenCalledWith('.', { ai: 'codex' })
   })
+
+  it('prints help when called with help', async () => {
+    const { main } = await import('../src/index')
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    await main(['node', 'neitn', 'help'])
+
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Usage:'))
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('neitn code:scaffold <node_id> [--node]'))
+  })
+
+  it('prints help when no command is provided', async () => {
+    const { main } = await import('../src/index')
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    await main(['node', 'neitn'])
+
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('neitn agents:install [path] [--ai codex|generic]'))
+  })
+
+  it('prints version when called with --version', async () => {
+    const { main } = await import('../src/index')
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    await main(['node', 'neitn', '--version'])
+
+    expect(logSpy).toHaveBeenCalledWith('0.1.0')
+  })
 })
