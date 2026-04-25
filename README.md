@@ -62,6 +62,8 @@ npm run link:global
 ## Commands
 
 ```bash
+neitn help
+neitn --version
 neitn init my-flow
 neitn init my-flow --ai codex
 neitn agents:install . --ai codex
