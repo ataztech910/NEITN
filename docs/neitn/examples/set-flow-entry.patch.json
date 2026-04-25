@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "targetProject": "demo_flow",
+  "summary": "Set the workflow entry node",
+  "operations": [
+    {
+      "op": "assert_exists",
+      "target": "flow.yaml",
+      "reason": "Ensure the workflow file exists"
+    },
+    {
+      "op": "assert_exists",
+      "target": "nodes/lead_webhook.yaml",
+      "reason": "Ensure the webhook node exists before setting it as entry"
+    },
+    {
+      "op": "update_fields",
+      "target": "flow.yaml",
+      "updates": {
+        "entry": "lead_webhook"
+      },
+      "reason": "Set the webhook node as the workflow entry"
+    }
+  ]
+}

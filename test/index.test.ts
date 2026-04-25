@@ -97,6 +97,6 @@ describe('main', () => {
 
     await main(['node', 'neitn', '--version'])
 
-    expect(logSpy).toHaveBeenCalledWith('0.1.0')
+    expect(logSpy).toHaveBeenCalledWith('0.3.0')
   })
 })

@@ -4,9 +4,8 @@
 
 This document defines how the AI must behave when creating and editing a modular workflow project.
 
-The AI does not directly edit files.  
 The AI does not generate the final n8n workflow JSON as the main working format.  
-The AI works through the project DSL and returns structured patches.
+The AI works through the project DSL and produces structured patches.
 
 Core loop:
 
@@ -48,12 +47,21 @@ The AI must never treat `dist/*.workflow.json` as the editable source format.
 
 The AI output must be one of these:
 
-1. a valid patch package in Patch Schema v0 format
+1. a valid patch file in Patch Schema v0 format stored under `.workflow/patches/`
 2. a structured explanation that no safe patch can be produced
 
-Preferred output is always patch JSON.
+Preferred output is always a patch file in `.workflow/patches/`.
+
+If the AI cannot write files in the environment, fallback output is patch JSON only.
 
 The AI must not output prose mixed with patch JSON in the same block.
+
+Canonical patch references:
+
+- `patch-schema.v0.json`
+- `examples/README.md`
+- `examples/create-webhook-http-flow.patch.json`
+- `examples/set-flow-entry.patch.json`
 
 ---
 
@@ -75,9 +83,17 @@ The AI must never propose edits to:
 
 ---
 
-### Rule 2 — Output patch JSON only
+### Rule 2 — Create a patch file in the project
 
-The AI must return a patch package that follows Patch Schema v0.
+The AI must create a new patch file under:
+
+- `.workflow/patches/`
+
+The filename must be timestamped and descriptive:
+
+- `YYYY-MM-DDTHH-mm-ss-short-description.patch.json`
+
+The file contents must follow Patch Schema v0 exactly.
 
 Allowed operations:
 
@@ -89,6 +105,8 @@ Allowed operations:
 - `assert_not_exists`
 
 The AI must not return “replace this whole file” instructions unless that replacement is represented by a valid patch operation.
+
+If the environment does not allow file creation, the fallback is to return only the patch JSON content, with no prose.
 
 ---
 
@@ -256,8 +274,12 @@ Before finalizing the patch, verify:
 
 ---
 
-### Step 5 — Emit patch JSON
-Return only the patch package.
+### Step 5 — Create patch file
+Create a new patch file in `.workflow/patches/`.
+
+Write only the patch JSON into that file.
+
+If file creation is not possible, return only the patch JSON content.
 
 ---
 
@@ -525,6 +547,14 @@ Operate only on the DSL project structure:
 - edges/*.yaml
 
 Return only Patch Schema v0 JSON when a safe modification is possible.
+
+When file writes are available:
+- create a new patch file in `.workflow/patches/`
+- choose a timestamped descriptive filename automatically
+- write only Patch Schema v0 JSON into that file
+
+When file writes are not available:
+- return only Patch Schema v0 JSON
 
 Rules:
 - never edit dist artifacts

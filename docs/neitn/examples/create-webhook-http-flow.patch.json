@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "targetProject": "demo_flow",
+  "summary": "Create webhook and HTTP request nodes and connect them",
+  "operations": [
+    {
+      "op": "assert_exists",
+      "target": "flow.yaml",
+      "reason": "Ensure the workflow project exists"
+    },
+    {
+      "op": "assert_not_exists",
+      "target": "nodes/lead_webhook.yaml",
+      "reason": "Ensure the lead webhook node does not already exist"
+    },
+    {
+      "op": "assert_not_exists",
+      "target": "nodes/send_lead.yaml",
+      "reason": "Ensure the HTTP node does not already exist"
+    },
+    {
+      "op": "create_file",
+      "target": "nodes/lead_webhook.yaml",
+      "payload": {
+        "id": "lead_webhook",
+        "name": "Lead Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "params": {
+          "path": "lead",
+          "httpMethod": "POST"
+        },
+        "ui": {
+          "x": 300,
+          "y": 200
+        }
+      },
+      "reason": "Create webhook trigger for lead intake"
+    },
+    {
+      "op": "create_file",
+      "target": "nodes/send_lead.yaml",
+      "payload": {
+        "id": "send_lead",
+        "name": "Send Lead",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "params": {
+          "method": "POST",
+          "url": "https://example.com/leads"
+        },
+        "ui": {
+          "x": 540,
+          "y": 200
+        }
+      },
+      "reason": "Create HTTP node to forward the lead"
+    },
+    {
+      "op": "create_file",
+      "target": "edges/main.yaml",
+      "payload": {
+        "connections": [
+          {
+            "from": "lead_webhook",
+            "to": "send_lead"
+          }
+        ]
+      },
+      "reason": "Connect the webhook node to the HTTP node"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ import { build } from './commands/build'
 import { importWorkflow } from './commands/import'
 import { codeScaffold } from './commands/code-scaffold'
 
-const CLI_VERSION = '0.1.0'
+const CLI_VERSION = '0.3.0'
 
 function helpText() {
   return `neitn

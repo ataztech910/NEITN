@@ -18,6 +18,7 @@ AI MUST:
 - generate a patch file
 - store it in a predictable location
 - follow Patch Schema v0 strictly
+- choose a timestamped descriptive filename automatically
 
 System MUST:
 - apply patch
@@ -110,6 +111,14 @@ Output:
 ```
 .workflow/patches/<file>.patch.json
 ```
+
+Primary mode:
+
+- AI writes the patch file directly into `.workflow/patches/`
+
+Fallback mode:
+
+- if the environment does not allow file writes, AI returns only patch JSON so the caller can save it into `.workflow/patches/`
 
 ---
 

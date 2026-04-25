@@ -226,6 +226,16 @@ This path is fully ready now.
 
 If an external AI agent uses the bundled skill contract, it can emit patch JSON targeting the DSL.
 
+Primary mode for a file-writing agent:
+
+- create a new patch file in `.workflow/patches/`
+- choose a timestamped descriptive filename automatically
+- write only valid Patch Schema v0 JSON into that file
+
+Fallback mode for a text-only agent:
+
+- return only the patch JSON content so it can be saved into `.workflow/patches/`
+
 Then you apply it with:
 
 ```bash
@@ -403,6 +413,20 @@ neitn build .
 ```
 
 That workflow is supported now.
+
+The intended user-facing prompt can stay short:
+
+```text
+Use the neitn skill for this project.
+
+Add:
+- a webhook node `lead_webhook`
+- an HTTP Request node `send_lead`
+- a connection from `lead_webhook` to `send_lead`
+- set `flow.entry` to `lead_webhook`
+```
+
+Patch file location, filename convention, and patch shape are skill-level defaults.
 
 ## Example: Human + AI Flow
 
