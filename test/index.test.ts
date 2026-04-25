@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+const { version: PACKAGE_VERSION } = require('../package.json') as { version: string }
 const initMock = vi.fn()
 const installAgentsMock = vi.fn()
 
@@ -97,6 +98,6 @@ describe('main', () => {
 
     await main(['node', 'neitn', '--version'])
 
-    expect(logSpy).toHaveBeenCalledWith('0.3.0')
+    expect(logSpy).toHaveBeenCalledWith(PACKAGE_VERSION)
   })
 })
